@@ -28,7 +28,7 @@ TCP\TP四层模型是基于OSI建立的实际实现的模型。分别为：应�
 
 ![TCP\IP模型与OSI模型关系图](/assets/images/2020-08-01/网络分层模型.png){:height="400px"}
 
-<strong>注：其中TCP协议属于传输层，IP协议属于网络层</strong>
+<strong>注：其中TCP协议属于传输层，IP协议属于网络层，而http属于应用层。</strong>
 
 ### TCP三次握手和四次挥手（面试点）
 
@@ -81,3 +81,51 @@ TCP是面向连接传输的，所以需要双方都确认建立了连接，确�
 
 <strong>DNS劫持：</strong>DNS劫持一般指域名劫持，通过攻击域名解析器（DNS），或伪造域名解析服务器的方法，把目标域名解析成错误的IP地址从而实现让用户无法访问到目标地址或者访问到钓鱼网站的目的。
 
+问题：如何防止DNS劫持？
+解答： 
+1. 用ip直接访问
+2. httpDNS, 可避免域名劫持问题。
+
+	传统的DNS是使用UDP进行通信。
+	httpDNS优势，可产看阿里巴巴提供的[HTTPDNS](https://help.aliyun.com/document_detail/30103.html?spm=a2c4g.11186623.6.543.1f196a4aHGyYC7)
+
+### HTTP报文格式
+
+- http请求包含请求头和请求体
+
+```http
+POST /v3/weather/weatherInfo HTTP/1.1
+Host: restapi.amap.com
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+----WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="city"
+
+北京
+----WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="key"
+
+ae6c53e2186f33bbf240a12d80672d1b
+----WebKitFormBoundary7MA4YWxkTrZu0gW
+```
+
+```http
+POST /v3/weather/weatherInfo HTTP/1.1
+Host: restapi.amap.com
+Content-Type: application/x-www-form-urlencoded
+
+city=北京&key=ae6c53e2186f33bbf240a12d80672d1b 
+```
+
+http可以使用socket直接拼接字符串进行请求，协议内容解释规定的字符串格式。（Socket可以建立TCP/IP的连接）
+
+如图所示，一个http包含3部分内容：
+- 请求行
+- 请求头
+- 请求体
+
+![http报文request格式](/assets/images/2020-08-01/http请求格式.png)
+
+- 接收到的响应包含响应头和响应体
+
+![http报文Response格式](/assets/images/2020-08-01/http报文response.png)
